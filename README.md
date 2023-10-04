@@ -1,11 +1,8 @@
-## Install MongoDB template
-oc create -f https://raw.githubusercontent.com/openshift-labs/starter-guides/ocp-4.8/mongodb-template.yaml -n rhn-engineering-dsch-dev
+## Create
 
-## Create MongoDB instance
-oc new-app --template=mongodb-ephemeral --param DATABASE_SERVICE_NAME=quote --param MONGODB_USER=quote --param MONGODB_PASSWORD=quote --param MONGODB_DATABASE=quote --param MONGODB_ADMIN_PASSWORD=quote --param NAMESPACE=rhn-engineering-dsch-dev --labels=app.kubernetes.io/part-of=quotesforu
+`oc create -f quotesdb_secrets.yaml`  
+`oc create -f quotesdb.yaml` 
 
-## Create MongoDB pod
-oc import-image mongodb:3.6 --from=registry.access.redhat.com/rhscl/mongodb-36-rhel7 --confirm -n rhn-engineering-dsch-dev
 
 
 ## Populate database
