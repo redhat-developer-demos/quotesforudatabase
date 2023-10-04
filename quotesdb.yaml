@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quotes
+  labels:
+    app: quotes
+    app.kubernetes.io/part-of: quotesforu
+    systemname: quotesforu
+    tier: database
+    database: mongodb
+    quotesforu: database
+    sandbox: labels
+    dbtype: ephemeral
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: quotes
+  type: ClusterIP  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quotes
+  labels:
+    app: quotes
+    app.kubernetes.io/part-of: quotesforu
+    systemname: quotesforu
+    tier: database
+    database: mongodb
+    quotesforu: database
+    sandbox: labels
+    dbtype: ephemeral
+    app.openshift.io/runtime: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: quotes
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: quotes
+        app.kubernetes.io/part-of: quotesforu
+        systemname: quotesforu
+        tier: database
+        database: mongodb
+        quotesforu: database
+        sandbox: labels
+        dbtype: ephemeral
+    spec:
+      containers:
+        - name: quotes
+          image: mongo:6.0.2
+          args: ["--port", "27017", "--bind_ip_all"]
+          ports:
+            - name: mongodb
+              containerPort: 27017
+          volumeMounts:
+            - name: mongo-config-dir
+              mountPath: /data/configdb
+            - name: mongo-data-dir
+              mountPath: /data/db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: quotes-credentials
+                  key: MONGODB_ADMIN_USER
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: quotes-credentials
+                  key: MONGODB_ADMIN_PASSWORD
+      volumes:
+        - name: mongo-config-dir
+          emptyDir: {}
+        - name: mongo-data-dir
+          emptyDir: {}
