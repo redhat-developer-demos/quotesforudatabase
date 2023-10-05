@@ -1,6 +1,9 @@
 echo 'BUILD AND POPULATE QUOTE DATABASE'
 echo '---------------------------------'
 
+echo 'Waiting for pod to be ready...'
+oc wait pod --for=condition=Ready -l tier=database,systemname=quotesforu
+
 echo 'getting pod name ...'
 $a = (kubectl get pods | select-string '^quote([^\s]+)-(?!deploy)') -match 'quote([^\s]+)'; $podname = $matches[0]
 
