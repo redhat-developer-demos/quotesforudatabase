@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: quotes
+  name: quote
   labels:
-    app: quotes
+    app: quote
     app.kubernetes.io/part-of: quotesforu
     systemname: quotesforu
     tier: database
@@ -16,15 +16,15 @@ spec:
   ports:
     - port: 27017
   selector:
-    app: quotes
+    app: quote
   type: ClusterIP  
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quotes
+  name: quote
   labels:
-    app: quotes
+    app: quote
     app.kubernetes.io/part-of: quotesforu
     systemname: quotesforu
     tier: database
@@ -36,13 +36,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: quotes
+      app: quote
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: quotes
+        app: quote
         app.kubernetes.io/part-of: quotesforu
         systemname: quotesforu
         tier: database
@@ -52,7 +52,7 @@ spec:
         dbtype: ephemeral
     spec:
       containers:
-        - name: quotes
+        - name: quote
           image: mongo:6.0.2
           args: ["--port", "27017", "--bind_ip_all"]
           ports:
